@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Segundos de Agonia</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0a;
+            color: #ff3333;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        #segundos {
+            font-size: 16vw;
+            font-weight: bold;
+            letter-spacing: -0.04em;
+            margin: 10px 0;
+            text-shadow: 0 0 25px #ff0000;
+            animation: pulse 2.5s infinite;
+        }
+
+        #emoji {
+            font-size: 12vw;
+            margin: 10px 0 20px 0;
+            transition: all 0.8s ease;
+        }
+
+        .texto {
+            font-size: 4.2vw;
+            margin: 15px 0 5px 0;
+            letter-spacing: 3px;
+        }
+
+        .subtexto {
+            font-size: 2.8vw;
+            color: #777;
+            margin-top: 30px;
+            font-style: italic;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.75; }
+        }
+
+        .container {
+            opacity: 0;
+            animation: fadeIn 2.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="texto" id="mensagem">SEGUNDOS DE AGONIA RESTANTES</div>
+    <div id="emoji">:'(</div>
+    <div id="segundos">28800</div>
+    <div class="subtexto" id="submensagem">⏳ HOJE AINDA NÃO ACABOU... MAS VAI ACABAR 💀</div>
+</div>
+
+<script>
+    function getEmoji(segundos) {
+        if (segundos > 25000) return "😭";
+        if (segundos > 20000) return "🙁";
+        if (segundos > 15000) return "🫤";
+        if (segundos > 10000) return "😐";
+        if (segundos > 7000)  return "🙂";
+        if (segundos > 4000)  return "😁";
+        if (segundos > 1500)  return "🥳";
+        return "🎉🍾";
+    }
+
+    function calcularSegundosRestantes() {
+        const agora = new Date();
+        const dia = agora.getDate();
+        const mes = agora.getMonth();
+        const ano = agora.getFullYear();
+
+        const inicioManha = new Date(ano, mes, dia, 8, 0, 0);
+        const fimManha    = new Date(ano, mes, dia, 12, 30, 0);
+        const inicioTarde = new Date(ano, mes, dia, 13, 30, 0);
+        const fimDia      = new Date(ano, mes, dia, 17, 0, 0);
+
+        let segundosRestantes = 0;
+        let mensagem = "SEGUNDOS DE AGONIA RESTANTES";
+        let submensagem = "⏳ HOJE AINDA NÃO ACABOU... MAS VAI ACABAR 💀";
+
+        if (agora < inicioManha || agora >= fimDia) {
+            mensagem = "FORA DE HORÁRIO";
+            submensagem = "AGORA É SOBREVIVER ATÉ AMANHÃ 🪦";
+            segundosRestantes = 0;
+        } 
+        else if (agora >= fimManha && agora < inicioTarde) {
+            mensagem = "PAUSA DE ALMOÇO";
+            submensagem = "A APROVEITAR OS ÚNICOS MINUTOS FELIZES DO DIA 🍽️";
+            segundosRestantes = 0;
+        } 
+        else if (agora >= inicioManha && agora < fimManha) {
+            const totalManha = (fimManha - inicioManha) / 1000;
+            const decorrido = (agora - inicioManha) / 1000;
+            segundosRestantes = Math.max(0, Math.floor(totalManha - decorrido));
+        } 
+        else if (agora >= inicioTarde && agora < fimDia) {
+            const totalTarde = (fimDia - inicioTarde) / 1000;
+            const decorrido = (agora - inicioTarde) / 1000;
+            segundosRestantes = Math.max(0, Math.floor(totalTarde - decorrido));
+        }
+
+        const emojiAtual = getEmoji(segundosRestantes);
+
+        document.getElementById("segundos").textContent = segundosRestantes.toLocaleString('pt-PT');
+        document.getElementById("emoji").textContent = emojiAtual;
+        document.getElementById("mensagem").textContent = mensagem;
+        document.getElementById("submensagem").textContent = submensagem;
+    }
+
+    calcularSegundosRestantes();
+    setInterval(calcularSegundosRestantes, 1000);
+</script>
+
+</body>
+</html>
